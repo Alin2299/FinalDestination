@@ -76,7 +76,7 @@ public class SpawnEnemy : MonoBehaviour
     {
         int ranLocation = Random.Range(-SPAWNLOCVARY, SPAWNLOCVARY);
         enemyClone = Instantiate(enemyShip, new Vector2(enemySpawnLocation.transform.position.x + ranLocation, enemySpawnLocation.transform.position.y), transform.rotation);
-        enemyClone.velocity = Vector2.down * enemySpeed;
+        enemyClone.linearVelocity = Vector2.down * enemySpeed;
         timer = 0f;
 
     }

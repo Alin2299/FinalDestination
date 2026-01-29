@@ -26,7 +26,7 @@ public class LaserMovement : MonoBehaviour
     void Update()
     {
         // Move the laser at the desired speed (upwards)
-        laser.velocity = transform.TransformDirection(Vector2.up * laserSpeed);
+        laser.linearVelocity = transform.TransformDirection(Vector2.up * laserSpeed);
     }
 
     

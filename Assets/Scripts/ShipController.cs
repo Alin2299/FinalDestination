@@ -68,6 +68,11 @@ public class ShipController : MonoBehaviour
     /// </summary>
     private Text timerText;
 
+    /// <summary>
+    /// Private Bool to track current shooting state
+    /// </summary>
+    private bool isShooting = false;
+
 
     void Start()
     {
@@ -79,50 +84,8 @@ public class ShipController : MonoBehaviour
 
     void Update()
     {
-        // Update the timer text with the remaining powerup time
-        timerText.text = "Powerup Time Remaining: " + powerupTimer.ToString("#.00");
-
-        // If Spacebar pressed, call OnShoot() to fire a laser
-        if (Keyboard.current.spaceKey.isPressed)
-            OnShoot();
-
-        // If player currently has a powerup, decrement the powerup timer
-        if (hasShotgun == true || hasMinigun == true)
-            powerupTimer -= Time.deltaTime;
-
-        // If the powerup time has expired, disable all powerups and reset everything related to powerups
-        if (powerupTimer <= 0)
-        {
-            hasShotgun = false;
-            hasMinigun = false;
-            timerUI.SetActive(false);
-            powerupTimer = 6;
-        }
-
-    }
-
-    void FixedUpdate()
-    {
-        // Set the velocity to be in the appropriate direction at the given movement speed
-        rbody.velocity = new Vector2(moveDirection.x * movementSpeed, moveDirection.y * movementSpeed);
-    }
-
-    /// <summary>
-    /// Public method that continually updates moveDirection
-    /// </summary>
-    /// <param name="inputValue">Inputvalue to be read</param>
-    public void OnMove(InputValue inputValue)
-    {
-        moveDirection = inputValue.Get<Vector2>();
-    }
-
-    /// <summary>
-    /// Public method that fires lasers, including factoring in powerups 
-    /// </summary>
-    public void OnShoot()
-    {
         // If the next laser can be fired
-        if (Time.time > nextFire)
+        if (isShooting && Time.time > nextFire)
         {
             // Increment nextFire by fireRate
             nextFire = Time.time + fireRate;
@@ -160,7 +123,48 @@ public class ShipController : MonoBehaviour
             // Play the laser firing SFX 
             audioController.GetComponent<AudioSource>().PlayOneShot(laserFire, AudioController.audioVolume);
         }
+
+        // Update the timer text with the remaining powerup time
+        timerText.text = "Powerup Time Remaining: " + powerupTimer.ToString("#.00");
+
+        // If player currently has a powerup, decrement the powerup timer
+        if (hasShotgun == true || hasMinigun == true)
+            powerupTimer -= Time.deltaTime;
+
+        // If the powerup time has expired, disable all powerups and reset everything related to powerups
+        if (powerupTimer <= 0)
+        {
+            hasShotgun = false;
+            hasMinigun = false;
+            timerUI.SetActive(false);
+            powerupTimer = 6;
+        }
+
     }
+
+    void FixedUpdate()
+    {
+        // Set the velocity to be in the appropriate direction at the given movement speed
+        rbody.linearVelocity = new Vector2(moveDirection.x * movementSpeed, moveDirection.y * movementSpeed);
+    }
+
+    /// <summary>
+    /// Public method that continually updates moveDirection
+    /// </summary>
+    /// <param name="inputValue">Inputvalue to be read</param>
+    public void OnMove(InputValue inputValue)
+    {
+        moveDirection = inputValue.Get<Vector2>();
+    }
+
+    /// <summary>
+    /// Public method used for tracking laser shooting status, including factoring in powerups 
+    /// </summary>
+    public void OnShoot(InputValue value)
+    {
+        isShooting = value.isPressed;
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         // If the player picked up the shotgun powerup, enable shotgun functionality
