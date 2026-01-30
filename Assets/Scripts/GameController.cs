@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Data;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Script that controls the metagame such as: winning/losing, updating score, playing music, etc
@@ -62,7 +63,7 @@ public class GameController : MonoBehaviour
             musicController.StopMusic();
 
             // If the Enter key is pressed, start a new game (by resetting everything)
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Keyboard.current != null && Keyboard.current.enterKey.wasPressedThisFrame)
             {
                 Scene Main = SceneManager.GetActiveScene();
                 SceneManager.LoadScene(Main.name);
@@ -74,7 +75,6 @@ public class GameController : MonoBehaviour
 
         // Update the score text with the current score
         scoreText.text = "Score: " + score;
-
     }
 
     /// <summary>
